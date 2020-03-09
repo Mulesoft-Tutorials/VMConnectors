@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+
+	<flow name="MainFlow" doc:id="7265f2c5-ee39-400f-bbc9-a1558b343ba2" >
+		<http:listener doc:name="Listener" doc:id="e3535ee9-edd1-4a61-bb7f-5c2572818f44" config-ref="HTTP_Listener_config" path="/vm"/>
+		<set-payload value="Hello Main" doc:name="Set Payload" doc:id="3b5ef5cb-7475-4ab7-86db-d7241fe19d59" />
+		<set-variable value="Raam" doc:name="Set Variable" doc:id="fcf240f2-1a69-4f51-9a9c-1e18067cfdfe" variableName="name"/>
+		<vm:publish queueName="queue1" doc:name="Publish" doc:id="2242831a-f529-4ef0-9caf-e0a9c62989ea" config-ref="VM_Config" timeout="300"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f19bbeaf-6680-4497-b769-fa2610859d0a" message="#[attributes.headers]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6dc6832e-9e82-407e-ae53-5d3be6dee9d3" message="#[payload]"/>
+	</flow>
+	<flow name="ChildFlow" doc:id="d89de028-2992-4361-a2fa-511f58faf2d3" >
+		<vm:listener doc:name="Listener" doc:id="81ad9f93-0c3e-449d-8a2c-7c9ca08f0f48" config-ref="VM_Config" queueName="queue1" timeout="300"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b99235f6-8d79-438c-8155-42471ea99853" message="#[payload]"/>
+		<set-payload value="Child Flow" doc:name="Set Payload" doc:id="9709bf36-4cf4-45c8-80e8-86f67d393144" />
+		<logger level="INFO" doc:name="Logger" doc:id="dc25d690-24f0-4457-91f4-f77a8dcc3a4a" message="#[payload]"/>
+	</flow>
+</mule>
